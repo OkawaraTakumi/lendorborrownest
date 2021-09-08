@@ -1,0 +1,60 @@
+import * as mongoose from 'mongoose';
+const LorBdetailSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    require: true,
+  },
+  detailClass: {
+    type: String,
+    require: true,
+  },
+  aboutDetail: {
+    type: String,
+    require: true,
+  },
+  LorBState: {
+    type: Number,
+    enum: [1, 2, 3, 4],
+    default: 4,
+  },
+  negotiateItem: {
+    type: String,
+    default: '',
+  },
+  negotiateDetail: {
+    type: String,
+    default: '',
+  },
+  userForApprove: {
+    type: String,
+    default: '',
+  },
+});
+
+const detailObj = mongoose.model('detailObj', LorBdetailSchema);
+
+export const LorBSchema = new mongoose.Schema({
+  LorBBox: [LorBdetailSchema],
+  userTo: {
+    type: String,
+    require: true,
+  },
+  userToName: {
+    type: String,
+    require: true,
+  },
+  userFrom: {
+    type: String,
+    require: true,
+  },
+  userFromName: {
+    type: String,
+    require: true,
+  },
+  createTime: {
+    type: Date,
+    default: Date.now,
+  },
+});
+//複合キーのユニークを設定
+LorBSchema.index({ userTo: 1, userFrom: 1 }, { unique: true });

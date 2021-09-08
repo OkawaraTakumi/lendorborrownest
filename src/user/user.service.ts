@@ -1,14 +1,72 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { CreateUserDto } from './dto/create-user.dto';
-import * as bcrypt from 'bcryptjs';
+import { Model } from 'mongoose';
+import { User } from './interface/user.interface';
+import { followPayload } from './interface/follow-user.interface';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UserService {
-  async getCurrentUser(user: any) {
+  constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
+
+  async followUser(FollowPayload: followPayload) {
+    const { email } = FollowPayload.infoFollow;
+    const DBId = await this.userModel
+      .findOne({ email: email })
+      .select('_id, name');
+    const user = await this.userModel.findOneAndUpdate(
+      {
+        _id: FollowPayload.id,
+      },
+      { $addToSet: { follow: DBId } }
+    );
+
     if (!user) {
       throw new NotFoundException('ユーザーが見つかりませんでした');
     }
     return user;
+  }
+
+  async getFollow(id: string) {
+    const followData = await this.userModel
+      .findOne({ _id: id })
+      .select('follow');
+    const count = followData.follow.length;
+    return {
+      success: true,
+      followData: followData.follow,
+      count,
+    };
+  }
+
+  async getFollower(id: string) {
+    const myId = new ObjectId(id);
+    console.log(myId, 'ObjectId');
+    const followerData = await this.userModel.aggregate([
+      {
+        $match: { _id: { $ne: myId } },
+      },
+      {
+        $match: { 'follow._id': id },
+      },
+      {
+        $unwind: '$follow',
+      },
+      {
+        $replaceRoot: {
+          newRoot: '$follow',
+        },
+      },
+    ]);
+
+    if (!followerData) {
+      throw new NotFoundException('取得に失敗しました');
+    }
+    const count = followerData.length;
+    return {
+      success: true,
+      followerData,
+      count,
+    };
   }
 }
