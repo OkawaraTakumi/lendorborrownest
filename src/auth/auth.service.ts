@@ -21,6 +21,7 @@ export class AuthService {
   ) {}
 
   async validateUser({ email, password }: AuthInfoDto) {
+    console.log(email);
     const user = await this.userModel.findOne({ email }).select('+password');
     if (!user) {
       throw new NotFoundException('ユーザーが存在しません');
@@ -35,7 +36,7 @@ export class AuthService {
   async login({ email, password }: AuthInfoDto) {
     if (await this.validateUser({ email, password })) {
       const user = await this.userModel.findOne({ email });
-      const payload = { userid: user._id };
+      const payload = { name: user.name, email: user.email, id: user._id };
       return {
         access_token: this.jwtService.sign(payload),
       };
@@ -45,12 +46,15 @@ export class AuthService {
   async regist(user: CreateUserDto) {
     const createUser = new this.userModel({
       name: user.name,
+      email: user.email,
       password: await bcrypt.hash(user.password, 12),
     });
     return await createUser.save();
   }
 
-  async getCurrentUser(user: any) {
+  async getCurrentUser({ id }) {
+    console.log(id, 'idです');
+    const user = this.userModel.findById(id);
     if (!user) {
       throw new NotFoundException('ユーザーが見つかりませんでした');
     }
