@@ -8,6 +8,7 @@ import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { CreateLorBDto } from './dto/create-lorb';
 import { ConfigService } from '@nestjs/config';
+import { ChengeStateDto } from './dto/approve-create.dto';
 
 @Injectable()
 export class LorbService {
@@ -86,6 +87,57 @@ export class LorbService {
     );
     if (!LorBUpdated) {
       throw new NotFoundException('更新に失敗しました');
+    }
+
+    return {
+      success: true,
+    };
+  }
+
+  async approveCreate(approveCreatePayload: ChengeStateDto) {
+    const { userFrom, userTo, id } = approveCreatePayload;
+    const reqApproveId = new ObjectId(id);
+    const negotiateWillApprove = await this.LorBModel.findOneAndUpdate(
+      {
+        userFrom,
+        userTo,
+        'LorBBox._id': reqApproveId,
+      },
+      {
+        $set: {
+          'LorBBox.$.LorBState': this.configService.get<string>('KEEP_LORB'),
+        },
+      }
+    );
+    if (!negotiateWillApprove) {
+      throw new NotFoundException('承認に失敗しました');
+    }
+    return {
+      success: true,
+    };
+  }
+
+  async rejectCreate(rejectCreatePayload: ChengeStateDto) {
+    const { userFrom, userTo, id } = rejectCreatePayload;
+    console.log(userFrom);
+    console.log(userTo);
+    console.log(id);
+    const reqApproveId = new ObjectId(id);
+
+    const negotiateWillApprove = await this.LorBModel.findOneAndUpdate(
+      {
+        userFrom,
+        userTo,
+        'LorBBox._id': reqApproveId,
+      },
+      {
+        $set: {
+          'LorBBox.$.LorBState': this.configService.get<string>('REJECTED'),
+        },
+      }
+    );
+    if (!negotiateWillApprove) {
+      throw new NotFoundException('承認に失敗しました');
     }
 
     return {
