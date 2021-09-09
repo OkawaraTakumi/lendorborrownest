@@ -16,5 +16,5 @@ export class CreateLorBDto {
   @IsString()
   readonly userFromName!: string;
   @IsString()
-  readonly userForapprove!: string;
+  readonly userForApprove!: string;
 }

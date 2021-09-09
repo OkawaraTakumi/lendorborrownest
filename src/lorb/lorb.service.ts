@@ -2,6 +2,7 @@ import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
+import { CreateLorBDto } from './dto/create-lorb';
 
 @Injectable()
 export class LorbService {
@@ -9,7 +10,7 @@ export class LorbService {
     @InjectModel('LorB') private readonly LorBModel: Model<BoxContents>
   ) {}
 
-  async createLorB(createLorBPayload) {
+  async createLorB(createLorBPayload: CreateLorBDto) {
     const {
       title,
       detailClass,
