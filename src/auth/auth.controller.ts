@@ -5,7 +5,8 @@ import {
   Post,
   Get,
   UseGuards,
-  Request,
+  Res,
+  Req,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
@@ -17,19 +18,20 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  login(@Body(ValidationPipe) authInfo: AuthInfoDto) {
-    return this.authService.login(authInfo);
+  async login(@Body(ValidationPipe) authInfo: AuthInfoDto, @Res() res) {
+    const returnLogin = await this.authService.login(authInfo);
+    res.cookie('auth-cookie', returnLogin.token, returnLogin.options);
+    res.json(returnLogin.data);
   }
 
   @Post('register')
-  register(@Body(ValidationPipe) registUser: CreateUserDto) {
-    console.log(registUser, 9);
-    return this.authService.regist(registUser);
+  async register(@Body(ValidationPipe) registUser: CreateUserDto) {
+    return await this.authService.regist(registUser);
   }
 
   @Get('getCurrentUser')
   @UseGuards(AuthGuard('jwt'))
-  getCurrentuser(@Request() req: any) {
-    return this.authService.getCurrentUser(req.user);
+  async getCurrentuser(@Req() req: any) {
+    return await this.authService.getCurrentUser(req.user);
   }
 }

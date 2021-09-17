@@ -7,21 +7,20 @@ import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/interface/user.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { AuthInfoDto } from './dto/auth-user.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly configService: ConfigService,
     @InjectModel('User') private readonly userModel: Model<User>,
-    private readonly jwtService: JwtService,
-    private readonly userService: UserService
+    private readonly jwtService: JwtService
   ) {}
 
   async validateUser({ email, password }: AuthInfoDto) {
-    console.log(email);
     const user = await this.userModel.findOne({ email }).select('+password');
     if (!user) {
       throw new NotFoundException('ユーザーが存在しません');
@@ -36,9 +35,17 @@ export class AuthService {
   async login({ email, password }: AuthInfoDto) {
     if (await this.validateUser({ email, password })) {
       const user = await this.userModel.findOne({ email });
-      const payload = { name: user.name, email: user.email, id: user._id };
+      const payload = { name: user.name, email: user.email, id: user.id };
+      const options = {
+        expires: new Date(
+          Date.now() + this.configService.get<string>('JWT_EXPIRE')
+        ),
+        httpOnly: true,
+      };
       return {
-        access_token: this.jwtService.sign(payload),
+        token: this.jwtService.sign(payload),
+        data: { success: true, user: { ...payload } },
+        options,
       };
     }
   }
@@ -53,19 +60,10 @@ export class AuthService {
   }
 
   async getCurrentUser({ id }) {
-    console.log(id, 'idです');
-    const user = this.userModel.findById(id);
+    const user = await this.userModel.findById(id);
     if (!user) {
       throw new NotFoundException('ユーザーが見つかりませんでした');
     }
-    return user;
+    return { user: user };
   }
-  // async validateUser({ name, password }: CreateUserDto) {
-  //   const user = await this.userService.findOne(name);
-  //   const isValid = await bcrypt.compare(password, user.password);
-  //   if (!isValid) {
-  //     throw new UnauthorizedException('認証に失敗しました');
-  //   }
-  //   return isValid;
-  // }
 }

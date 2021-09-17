@@ -4,7 +4,7 @@ export class AuthInfoDto {
   @IsEmail()
   readonly email!: string;
   @IsString()
-  @MinLength(8)
+  @MinLength(6)
   @MaxLength(20)
   readonly password!: string;
 }
