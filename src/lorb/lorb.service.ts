@@ -213,7 +213,6 @@ export class LorbService {
     if (!onBeingSuggested) {
       throw new NotAcceptableException('取得に失敗しました');
     }
-    console.log(onBeingSuggested);
     const count = onBeingSuggested.length;
 
     return {
@@ -277,7 +276,6 @@ export class LorbService {
 
   async getLorBKeepLorB(getId) {
     const user = getId;
-    console.log(user);
     const LKeepOn = await this.LorBModel.aggregate([
       {
         $match: { userFrom: user },
