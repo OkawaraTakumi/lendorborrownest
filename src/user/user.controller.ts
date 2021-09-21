@@ -15,12 +15,20 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
+  @Get('getFollow')
   @UseGuards(AuthGuard('jwt'))
   getFollow(@Request() req: any) {
     const { id } = req.user;
     return this.userService.getFollow(id);
   }
+
+  @Get('getFollower')
+  @UseGuards(AuthGuard('jwt'))
+  getFollower(@Request() req: any) {
+    const { id } = req.user;
+    return this.userService.getFollower(id);
+  }
+
   @Post('followUser')
   @UseGuards(AuthGuard('jwt'))
   followUser(
