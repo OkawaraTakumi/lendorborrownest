@@ -4,10 +4,15 @@ import { Model } from 'mongoose';
 import { User } from './interface/user.interface';
 import { followPayload } from './interface/follow-user.interface';
 import { ObjectId } from 'mongodb';
+import { FindUserDto } from './dto/find-user.dto';
 
 @Injectable()
 export class UserService {
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
+  async getUserName(emailForFind: FindUserDto) {
+    const user = await this.userModel.findOne(emailForFind).select('name');
+    return user;
+  }
 
   async followUser(FollowPayload: followPayload) {
     const { email } = FollowPayload.infoFollow;

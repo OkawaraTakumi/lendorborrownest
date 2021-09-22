@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Request,
   UseGuards,
@@ -14,6 +15,12 @@ import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+  @Get('getUserName/:email')
+  @UseGuards(AuthGuard('jwt'))
+  getUserName(@Param('email') email: string) {
+    console.log(email, 'email');
+    return this.userService.getUserName({ email: email });
+  }
 
   @Get('getFollow')
   @UseGuards(AuthGuard('jwt'))
