@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './interface/user.interface';
@@ -19,6 +23,9 @@ export class UserService {
     const DBId = await this.userModel
       .findOne({ email: email })
       .select('_id, name');
+    if (DBId.id === FollowPayload.id) {
+      throw new BadRequestException();
+    }
     const user = await this.userModel.findOneAndUpdate(
       {
         _id: FollowPayload.id,

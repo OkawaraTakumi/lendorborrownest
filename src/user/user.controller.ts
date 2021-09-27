@@ -5,10 +5,13 @@ import {
   Param,
   Post,
   Request,
+  UseFilters,
   UseGuards,
   ValidationPipe,
+  ExceptionFilter,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { HttpExceptionFilter } from 'src/filter/http-exception.filter';
 import { InfoFollowDto } from './dto/follow-user.dto';
 import { UserService } from './user.service';
 
@@ -17,28 +20,28 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get('getUserName/:email')
   @UseGuards(AuthGuard('jwt'))
-  getUserName(@Param('email') email: string) {
+  async getUserName(@Param('email') email: string) {
     console.log(email, 'email');
     return this.userService.getUserName({ email: email });
   }
 
   @Get('getFollow')
   @UseGuards(AuthGuard('jwt'))
-  getFollow(@Request() req: any) {
+  async getFollow(@Request() req: any) {
     const { id } = req.user;
     return this.userService.getFollow(id);
   }
 
   @Get('getFollower')
   @UseGuards(AuthGuard('jwt'))
-  getFollower(@Request() req: any) {
+  async getFollower(@Request() req: any) {
     const { id } = req.user;
     return this.userService.getFollower(id);
   }
 
   @Post('followUser')
   @UseGuards(AuthGuard('jwt'))
-  followUser(
+  async followUser(
     @Body(ValidationPipe) infoFollow: InfoFollowDto,
     @Request() req: any
   ) {
