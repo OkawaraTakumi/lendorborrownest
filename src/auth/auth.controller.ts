@@ -42,7 +42,6 @@ export class AuthController {
   @Post('logout')
   @UseGuards(AuthGuard('jwt'))
   async logout(@Res() res: Response) {
-    const returnLogin = await this.authService.logout();
     res.clearCookie('auth-cookie');
     return res.sendStatus(200);
   }

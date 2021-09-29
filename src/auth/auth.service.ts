@@ -50,19 +50,6 @@ export class AuthService {
     }
   }
 
-  logout() {
-    const options = {
-      expires: new Date(
-        Date.now() + this.configService.get<string>('JWT_EXPIRE')
-      ),
-      httpOnly: true,
-    };
-    return {
-      token: '',
-      options,
-    };
-  }
-
   async regist(user: CreateUserDto) {
     const createUser = new this.userModel({
       name: user.name,
