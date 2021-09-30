@@ -12,7 +12,6 @@ async function bootstrap() {
     allowedHeaders: '*',
     exposedHeaders: ['*', 'Authorization'],
     credentials: true,
-    preflightContinue: true,
   });
   await app.listen(process.env.PORT || 5000);
 }
