@@ -7,7 +7,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
   app.enableCors({
-    origin: true,
+    origin: 'https://lendorborrownext-movm5510o-okawaratakumi.vercel.app/',
+    methods: '*',
+    allowedHeaders: '*',
+    exposedHeaders: ['*', 'Authorization'],
     credentials: true,
     preflightContinue: true,
   });
