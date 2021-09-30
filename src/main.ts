@@ -8,9 +8,20 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors({
     origin: true,
-    methods: ['*', 'POST'],
-    allowedHeaders: ['*', 'Content-Type'],
-    exposedHeaders: ['*', 'Authorization'],
+    methods: ['*', 'GET', 'POST', 'OPTIONS'],
+    allowedHeaders: [
+      '*',
+      'Content-Type',
+      'Content-Length',
+      'Accept-Encoding',
+      'X-CSRF-Token',
+      'Authorization',
+      'accept',
+      'origin',
+      'Cache-Control',
+      'X-Requested-With',
+    ],
+    exposedHeaders: ['*', 'Authorization', 'Content-Length'],
     credentials: true,
   });
   await app.listen(process.env.PORT || 5000);
