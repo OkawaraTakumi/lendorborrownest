@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
   app.enableCors({
-    origin: 'https://lendorborrownext-movm5510o-okawaratakumi.vercel.app/',
+    origin: 'https://lendorborrownext-movm5510o-okawaratakumi.vercel.app',
     methods: ['*', 'GET', 'POST', 'OPTIONS'],
     allowedHeaders: [
       '*',
