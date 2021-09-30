@@ -9,6 +9,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import cookieParser from 'cookie-parser';
 import { response, Response } from 'express';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { AuthService } from './auth.service';
@@ -27,7 +28,6 @@ export class AuthController {
     res.cookie('auth-cookie', returnLogin.token, returnLogin.options);
     res.json(returnLogin.data);
   }
-
   @Post('register')
   async register(@Body(ValidationPipe) registUser: CreateUserDto) {
     return await this.authService.regist(registUser);
