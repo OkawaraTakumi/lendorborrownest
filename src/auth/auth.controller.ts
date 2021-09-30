@@ -33,8 +33,8 @@ export class AuthController {
     return await this.authService.regist(registUser);
   }
 
+  // @UseGuards(AuthGuard('jwt'))
   @Get('getCurrentUser')
-  @UseGuards(AuthGuard('jwt'))
   async getCurrentuser(@Req() req: any) {
     return await this.authService.getCurrentUser(req.user);
   }
