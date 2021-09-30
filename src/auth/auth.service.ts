@@ -41,7 +41,6 @@ export class AuthService {
           Date.now() + this.configService.get<string>('JWT_EXPIRE')
         ),
         httpOnly: true,
-        path: '/',
       };
       return {
         token: this.jwtService.sign(payload),
