@@ -8,6 +8,7 @@ import {
   Res,
   Req,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import cookieParser from 'cookie-parser';
 import { response, Response } from 'express';
@@ -17,7 +18,10 @@ import { AuthInfoDto } from './dto/auth-user.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService
+  ) {}
 
   @Post('login')
   async login(
@@ -25,7 +29,14 @@ export class AuthController {
     @Res() res: Response
   ) {
     const returnLogin = await this.authService.login(authInfo);
-    res.cookie('auth-cookie', returnLogin.token, returnLogin.options);
+    res.cookie('auth-cookie', returnLogin.token, {
+      expires: new Date(
+        Date.now() + this.configService.get<string>('JWT_EXPIRE')
+      ),
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    });
     res.json(returnLogin.data);
   }
   @Post('register')
