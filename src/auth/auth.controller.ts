@@ -10,8 +10,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
-import cookieParser from 'cookie-parser';
-import { response, Response } from 'express';
+import { Response } from 'express';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { AuthInfoDto } from './dto/auth-user.dto';
