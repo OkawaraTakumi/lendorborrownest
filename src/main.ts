@@ -7,9 +7,7 @@ import * as csurf from 'csurf';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // app.use(helmet);
   app.use(cookieParser());
-  app.use(csurf());
   app.enableCors({
     origin: 'https://lendorborrownext-b7acbxt6u-okawaratakumi.vercel.app',
     methods: ['*', 'GET', 'POST', 'OPTIONS'],
