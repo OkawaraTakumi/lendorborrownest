@@ -10,7 +10,7 @@ async function bootstrap() {
   app.use(helmet());
   app.use(cookieParser());
   app.enableCors({
-    origin: 'https://lendorborrownext-b7acbxt6u-okawaratakumi.vercel.app',
+    origin: 'https://lendorborrownext-m8t1x05mu-okawaratakumi.vercel.app',
     methods: ['*', 'GET', 'POST', 'OPTIONS'],
     allowedHeaders: [
       '*',
