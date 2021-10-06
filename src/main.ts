@@ -11,7 +11,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors({
     origin: [
-      'https://lendorborrownext-okawaratakumi.vercel.app/',
+      'https://lendorborrownext-80l9z7gjj-okawaratakumi.vercel.app',
       'http://localhost:3000',
     ],
     methods: ['*', 'GET', 'POST', 'PUT', 'OPTIONS'],
